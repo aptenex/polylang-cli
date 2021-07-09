@@ -17,6 +17,10 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
         WP_CLI::error( sprintf( 'This WP-CLI package requires WP-CLI version %s or higher. Please visit %s', '2.5.0', 'https://wp-cli.org/#updating' ) );
     }
 
+    if (!defined('PLL_INC')) {
+        define('PLL_INC', '');
+    }
+
     # api, cli
     require __DIR__ . '/src/Api/Api.php';
     require __DIR__ . '/src/Api/Cli.php';
@@ -57,11 +61,9 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
     WP_CLI::add_hook( 'before_invoke:pll menu', function() {
         # make sure localized (temporary) nav menu locations are always registered
-        if (defined('PLL_INC')) {
-            require_once PLL_INC . '/nav-menu.php';
-            $pll_nav_menu = new \PLL_Nav_Menu(\PLL());
-            $pll_nav_menu->create_nav_menu_locations();
-        }
+        require_once PLL_INC . '/nav-menu.php';
+        $pll_nav_menu = new \PLL_Nav_Menu(\PLL());
+        $pll_nav_menu->create_nav_menu_locations();
     });
 
     // WP_CLI::add_command( 'pll',        Polylang_CLI\Cli::class );

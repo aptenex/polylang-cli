@@ -22,11 +22,11 @@ trait Cpt {
         # invoke Polylang settings module
         $settings = new class($this->pll) extends \PLL_Settings_CPT {
             public function get_post_types() {
-                return $this->post_types;
+                return (array) $this->post_types;
             }
 
             public function get_taxonomies() {
-                return $this->taxonomies;
+                return (array) $this->taxonomies;
             }
         };
 
