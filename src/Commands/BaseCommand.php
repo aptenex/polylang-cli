@@ -37,16 +37,20 @@ class BaseCommand extends \WP_CLI_Command
         }
 
         # check Polylang required version
-        if ( version_compare( POLYLANG_VERSION, '2.0.9', '<' ) ) {
-            $this->cli->error( sprintf( 'This WP-CLI command requires Polylang version %s or higher: %s', '2.0.9', 'wp plugin update polylang' ) );
+        if ( version_compare( POLYLANG_VERSION, '3.0.3', '<' ) ) {
+            $this->cli->error( sprintf( 'This WP-CLI command requires Polylang version %s or higher: %s', '3.0.3', 'wp plugin update polylang' ) );
         }
 
         # get Polylang instance (global)
         $this->pll = \PLL();
 
-        # make Polylang API functions available
-        echo ">>>>>>>>>>>>>>>>>>>" . PLL_INC . '<<<<<<<<<<<<';
-        $this->api = new Api(PLL_INC . '/api.php');
+        if (defined('PLL_INC')) {
+            # make Polylang API functions available
+            $this->api = new Api(PLL_INC . '/api.php');
+        } else if (defined('POLYLANG_PRO')) {
+            # make Polylang API functions available from PRO
+            $this->api = new Api(POLYLANG_DIR . '/include/api.php');
+        }
     }
 
 }

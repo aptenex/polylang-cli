@@ -55,9 +55,15 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
         });
     });
 
-    WP_CLI::add_hook( 'before_invoke:pll menu', function() {
+    WP_CLI::add_hook('before_invoke:pll menu', function () {
         # make sure localized (temporary) nav menu locations are always registered
-        require_once PLL_INC . '/nav-menu.php';
+
+        if (defined('PLL_INC')) {
+            require_once PLL_INC . '/nav-menu.php';
+        } else if (defined('POLYLANG_PRO')) {
+            require_once POLYLANG_DIR . '/include/nav-menu.php';
+        }
+
         $pll_nav_menu = new \PLL_Nav_Menu(\PLL());
         $pll_nav_menu->create_nav_menu_locations();
     });
