@@ -19,7 +19,8 @@ trait Cpt {
         # polylang pro has privatized the post_types/taxonomies within their PLL_Settings_CPT
         # we can get these types though by extending the class
 
-        $extendedSettings = new class extends \PLL_Settings_CPT {
+        # invoke Polylang settings module
+        $settings = new class($this->pll) extends \PLL_Settings_CPT {
             public function get_post_types() {
                 return $this->post_types;
             }
@@ -29,8 +30,6 @@ trait Cpt {
             }
         };
 
-        # invoke Polylang settings module
-        $settings = new $extendedSettings( $this->pll );
         $this->options_cpt = $settings;
 
         # set current module
