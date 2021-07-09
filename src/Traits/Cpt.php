@@ -17,18 +17,16 @@ trait Cpt {
         $input = explode( ',', $data );
 
         # polylang pro has privatized the post_types/taxonomies within their PLL_Settings_CPT
-        # we can get these types though by extending the class
+        # we can get these types though by using reflection
+
+        $fieldPostTypes = new \ReflectionProperty( 'PLL_Settings_CPT', 'post_types' );
+        $fieldPostTypes->setAccessible( true );
+
+        $fieldTaxonomies = new \ReflectionProperty( 'PLL_Settings_CPT', 'taxonomies' );
+        $fieldTaxonomies->setAccessible( true );
 
         # invoke Polylang settings module
-        $settings = new class($this->pll) extends \PLL_Settings_CPT {
-            public function get_post_types() {
-                return (array) $this->post_types;
-            }
-
-            public function get_taxonomies() {
-                return (array) $this->taxonomies;
-            }
-        };
+        $settings = new \PLL_Settings_CPT( $this->pll );
 
         $this->options_cpt = $settings;
 
