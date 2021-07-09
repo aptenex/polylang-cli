@@ -20,7 +20,7 @@ trait Cpt {
         # we can get these types though by extending the class
 
         # invoke Polylang settings module
-        $settings = new class($this->pll) extends \PLL_Settings_CPT {
+        $settings = new class( $this->pll ) extends \PLL_Settings_CPT {
             public function get_post_types() {
                 return (array) $this->post_types;
             }
@@ -30,7 +30,7 @@ trait Cpt {
             }
 
             public function update( $options ) {
-                parent::update($options);
+                return parent::update($options);
             }
         };
 
@@ -68,7 +68,7 @@ trait Cpt {
         $_POST = compact( 'post_types', 'taxonomies' );
         $_POST['action'] = 'pll_save_options';
 
-        $options = $settings->update($_POST);
+        $options = $settings->update( $_POST );
 
         # update Polylang settings
         $settings->options = array_merge( $settings->options, $options );
