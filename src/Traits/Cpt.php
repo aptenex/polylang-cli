@@ -17,16 +17,22 @@ trait Cpt {
         $input = explode( ',', $data );
 
         # polylang pro has privatized the post_types/taxonomies within their PLL_Settings_CPT
-        # we can get these types though by using reflection
-
-        $fieldPostTypes = new \ReflectionProperty( 'PLL_Settings_CPT', 'post_types' );
-        $fieldPostTypes->setAccessible( true );
-
-        $fieldTaxonomies = new \ReflectionProperty( 'PLL_Settings_CPT', 'taxonomies' );
-        $fieldTaxonomies->setAccessible( true );
+        # we can get these types though by extending the class
 
         # invoke Polylang settings module
-        $settings = new \PLL_Settings_CPT( $this->pll );
+        $settings = new class($this->pll) extends \PLL_Settings_CPT {
+            public function get_post_types() {
+                return (array) $this->post_types;
+            }
+
+            public function get_taxonomies() {
+                return (array) $this->taxonomies;
+            }
+
+            public function update( $options ) {
+                parent::update($options);
+            }
+        };
 
         $this->options_cpt = $settings;
 
@@ -39,13 +45,13 @@ trait Cpt {
         # sanitize post types input
         $post_types = array_map( 'sanitize_key', explode( ',', $data ) );
         $post_types = array_combine( $post_types, array_fill( 1, count( $post_types ), 1 ) );
-        $post_types = array_intersect_key( $post_types, $settings->post_types);
+        $post_types = array_intersect_key( $post_types, $settings->get_post_types() );
         $post_types = array_merge( array_combine( $settings->options['post_types'], array_fill( 1, count( $settings->options['post_types'] ), 1 ) ), $post_types );
 
         # sanitize taxonomies input
         $taxonomies = array_map( 'sanitize_title', explode( ',', $data ) );
         $taxonomies = array_combine( $taxonomies, array_fill( 1, count( $taxonomies ), 1 ) );
-        $taxonomies = array_intersect_key( $taxonomies, $settings->taxonomies );
+        $taxonomies = array_intersect_key( $taxonomies, $settings->get_taxonomies() );
         $taxonomies = array_merge( array_combine( $settings->options['taxonomies'], array_fill( 1, count( $settings->options['taxonomies'] ), 1 ) ), $taxonomies );
 
         # disable post types or taxonomies
@@ -62,16 +68,13 @@ trait Cpt {
         $_POST = compact( 'post_types', 'taxonomies' );
         $_POST['action'] = 'pll_save_options';
 
-        # make protected method accessible
-        $update = new \ReflectionMethod( 'PLL_Settings_CPT', 'update' );
-        $update->setAccessible( true );
-        $options = $update->invoke( $settings, $_POST );
+        $options = $settings->update($_POST);
 
         # update Polylang settings
         $settings->options = array_merge( $settings->options, $options );
 
         # see below, @todo review
-        update_option( 'polylang', $settings->options );
+        # update_option( 'polylang', $settings->options );
 
         # set the options
         $this->pll->model->options = $settings->options;
