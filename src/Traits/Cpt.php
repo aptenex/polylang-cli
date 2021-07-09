@@ -42,6 +42,9 @@ trait Cpt {
         # populate the $_POST array
         $_POST = array();
 
+        $this->cli->success( \json_encode($data) );
+        $this->cli->success( \json_encode([$settings->get_post_types(), $settings->get_taxonomies()]) );
+
         # sanitize post types input
         $post_types = array_map( 'sanitize_key', explode( ',', $data ) );
         $post_types = array_combine( $post_types, array_fill( 1, count( $post_types ), 1 ) );
