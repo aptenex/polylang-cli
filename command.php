@@ -17,10 +17,6 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
         WP_CLI::error( sprintf( 'This WP-CLI package requires WP-CLI version %s or higher. Please visit %s', '2.5.0', 'https://wp-cli.org/#updating' ) );
     }
 
-    if (!defined('PLL_INC')) {
-        define('PLL_INC', '');
-    }
-
     # api, cli
     require __DIR__ . '/src/Api/Api.php';
     require __DIR__ . '/src/Api/Cli.php';
