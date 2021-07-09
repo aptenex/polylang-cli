@@ -9,12 +9,12 @@
 
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 
-    if ( version_compare( PHP_VERSION, '5.5', '<' ) ) {
-        WP_CLI::error( sprintf( 'This WP-CLI package requires PHP version %s or higher.', '5.5' ) );
+    if ( version_compare( PHP_VERSION, '7.3', '<' ) ) {
+        WP_CLI::error( sprintf( 'This WP-CLI package requires PHP version %s or higher.', '7.3' ) );
     }
 
-    if ( version_compare( WP_CLI_VERSION, '1.5.0', '<' ) ) {
-        WP_CLI::error( sprintf( 'This WP-CLI package requires WP-CLI version %s or higher. Please visit %s', '1.5.0', 'https://wp-cli.org/#updating' ) );
+    if ( version_compare( WP_CLI_VERSION, '2.5.0', '<' ) ) {
+        WP_CLI::error( sprintf( 'This WP-CLI package requires WP-CLI version %s or higher. Please visit %s', '2.5.0', 'https://wp-cli.org/#updating' ) );
     }
 
     # api, cli
@@ -46,26 +46,22 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
     require __DIR__ . '/src/Commands/String.php';
 
     WP_CLI::add_hook( 'before_wp_load', function() {
-
         WP_CLI::add_wp_hook( 'init', function() {
-
             # make sure polylang_mo post type is always registered
             if ( ! post_type_exists( 'polylang_mo' ) ) {
                 $labels = array( 'name' => __( 'Strings translations', 'polylang' ) );
                 register_post_type( 'polylang_mo', array( 'labels' => $labels, 'rewrite' => false, 'query_var' => false, '_pll' => true ) );
             }
-
         });
-
     });
 
     WP_CLI::add_hook( 'before_invoke:pll menu', function() {
-
-            # make sure localized (temporary) nav menu locations are always registered
+        # make sure localized (temporary) nav menu locations are always registered
+        if (defined('PLL_INC')) {
             require_once PLL_INC . '/nav-menu.php';
-            $pll_nav_menu = new \PLL_Nav_Menu( \PLL() );
+            $pll_nav_menu = new \PLL_Nav_Menu(\PLL());
             $pll_nav_menu->create_nav_menu_locations();
-
+        }
     });
 
     // WP_CLI::add_command( 'pll',        Polylang_CLI\Cli::class );
