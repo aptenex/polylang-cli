@@ -3,7 +3,7 @@
  * CLI interface for the Polylang plugin.
  *
  * @author  Peter J. Herrel <peterherrel@gmail.com>
- * @package diggy/polylang-cli
+ * @package aptenex/polylang-cli
  * @version 1.0.0-prealpha.1
  */
 
