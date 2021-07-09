@@ -67,6 +67,9 @@ trait Cpt {
 
         $_POST = compact( 'post_types', 'taxonomies' );
         $_POST['action'] = 'pll_save_options';
+        $_POST['module'] = 'cpt';
+
+        $this->cli->success( \json_encode($_POST) );
 
         $options = $settings->update( $_POST );
 
@@ -74,7 +77,7 @@ trait Cpt {
         $settings->options = array_merge( $settings->options, $options );
 
         # see below, @todo review
-        # update_option( 'polylang', $settings->options );
+        update_option( 'polylang', $settings->options );
 
         # set the options
         $this->pll->model->options = $settings->options;
