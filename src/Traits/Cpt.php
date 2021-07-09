@@ -42,19 +42,19 @@ trait Cpt {
         # populate the $_POST array
         $_POST = array();
 
-        $this->cli->success( \json_encode($data) );
-        $this->cli->success( \json_encode([$settings->get_post_types(), $settings->get_taxonomies()]) );
+        //$this->cli->success( \json_encode($data) );
+        //$this->cli->success( \json_encode([$settings->get_post_types(), $settings->get_taxonomies()]) );
 
         # sanitize post types input
         $post_types = array_map( 'sanitize_key', explode( ',', $data ) );
         $post_types = array_combine( $post_types, array_fill( 1, count( $post_types ), 1 ) );
-        $post_types = array_intersect_key( $post_types, $settings->get_post_types() );
+        //$post_types = array_intersect_key( $post_types, $settings->get_post_types() );
         $post_types = array_merge( array_combine( $settings->options['post_types'], array_fill( 1, count( $settings->options['post_types'] ), 1 ) ), $post_types );
 
         # sanitize taxonomies input
         $taxonomies = array_map( 'sanitize_title', explode( ',', $data ) );
         $taxonomies = array_combine( $taxonomies, array_fill( 1, count( $taxonomies ), 1 ) );
-        $taxonomies = array_intersect_key( $taxonomies, $settings->get_taxonomies() );
+        //$taxonomies = array_intersect_key( $taxonomies, $settings->get_taxonomies() );
         $taxonomies = array_merge( array_combine( $settings->options['taxonomies'], array_fill( 1, count( $settings->options['taxonomies'] ), 1 ) ), $taxonomies );
 
         # disable post types or taxonomies
